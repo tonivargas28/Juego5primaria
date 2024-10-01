@@ -6,6 +6,7 @@
     <title>Juego de Preguntas y Respuestas</title>
     <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
     <h1>¡BIENVENIDO AL JUEGO PARA APROBAR!</h1>
     
@@ -18,37 +19,37 @@
     </div>
     <p id="progress-text">0 / 15</p>
     
-    <p id="score-display">Puntos acumulados: 0</p> <!-- Mostrar los puntos acumulados -->
+    <p id="score-display">Puntos acumulados: 0</p>
 
     <button id="start-button" onclick="startGame()">Comenzar juego</button>
     <button id="answer-button" onclick="checkAnswer()" style="display:none;">Enviar respuesta</button>
+    <div id="score-container">
+        <div class="score-icon">💎</div> <!-- Icono que rebota -->
+        <span id="points-text">0</span> puntos
+    </div>
+    
 
     <script>
-        // Número total de preguntas
-        const totalQuestions = 15;
-        // Número de respuestas correctas
+        const totalQuestions = 2; // Cambia esto para un total de 10 preguntas si lo necesitas
         let correctAnswers = 0;
-        // Puntos acumulados iniciales
         let totalScore = 0;
 
         // Cargar la puntuación desde localStorage (si existe)
         if (localStorage.getItem('totalScore')) {
             totalScore = parseInt(localStorage.getItem('totalScore'));
+            updateScoreDisplay();
         }
 
-        // Función para actualizar la barra de progreso
         function updateProgress() {
             const progressPercent = (correctAnswers / totalQuestions) * 100;
             document.getElementById('progress-bar').style.width = progressPercent + '%';
             document.getElementById('progress-text').innerText = correctAnswers + ' / ' + totalQuestions;
         }
 
-        // Función para actualizar el puntaje acumulado en pantalla
         function updateScoreDisplay() {
             document.getElementById('score-display').innerText = `Puntos acumulados: ${totalScore}`;
         }
 
-        // Incrementar respuestas correctas y actualizar la barra de progreso
         function correctAnswer() {
             if (correctAnswers < totalQuestions) {
                 correctAnswers++;
@@ -69,12 +70,11 @@
                 this.questions = this.shuffleArray(questions).slice(0, totalQuestions);
                 this.currentQuestionIndex = 0;
                 this.score = 0;
-                this.timeLimit = 300; // Tiempo límite en segundos
+                this.timeLimit = 30; // Tiempo límite en segundos
                 this.timeRemaining = this.timeLimit;
                 this.timerInterval = null;
             }
 
-            // Barajar las preguntas aleatoriamente
             shuffleArray(array) {
                 for (let i = array.length - 1; i > 0; i--) {
                     const j = Math.floor(Math.random() * (i + 1));
@@ -83,51 +83,31 @@
                 return array;
             }
 
-            // Obtener la pregunta actual
             getCurrentQuestion() {
                 return this.questions[this.currentQuestionIndex];
             }
 
-            // Verificar la respuesta
             checkAnswer(selectedOptionIndex) {
-                clearInterval(this.timerInterval); // Detener el temporizador
+                clearInterval(this.timerInterval);
 
                 const currentQuestion = this.getCurrentQuestion();
                 
                 if (selectedOptionIndex === currentQuestion.correctOptionIndex) {
                     this.score++;
-                    correctAnswer(); // Actualizar barra de progreso
+                    correctAnswer();
                 } else {
-                    alert("Respuesta incorrecta. Reiniciando el juego. ERES UN PAQUETE KIKIN");
-                    this.resetGame();
-                    return;
+                    alert("Respuesta incorrecta.");
                 }
 
                 this.currentQuestionIndex++;
 
                 if (this.currentQuestionIndex === this.questions.length) {
-                    // Verificar si el jugador respondió todas las preguntas correctamente
-                    if (this.score === this.questions.length) {
-                        // Bonificar con 10 puntos si respondió todo correctamente
-                        totalScore += 10;
-                        alert(`¡Felicitaciones! Has respondido todas las preguntas correctamente. Recibes 10 puntos de bonificación.`);
-                    } else {
-                        alert(`Fin del juego. Puntuación: ${this.score} de ${this.questions.length}`);
-                    }
-
-                    // Guardar la puntuación acumulada en localStorage
-                    localStorage.setItem('totalScore', totalScore);
-
-                    // Actualizar el puntaje acumulado en pantalla
-                    updateScoreDisplay();
-
-                    this.resetGame();
+                    this.endGame();
                 } else {
                     this.displayQuestion();
                 }
             }
 
-            // Mostrar la pregunta
             displayQuestion() {
                 const questionContainer = document.getElementById('question-container');
                 const answerContainer = document.getElementById('answer-container');
@@ -167,11 +147,10 @@
                 document.getElementById('answer-button').style.display = 'block';
                 document.getElementById('timer').style.display = 'block';
                 this.timeRemaining = this.timeLimit;
-                document.getElementById('timer').textContent = ` ${this.timeRemaining} `;
+                document.getElementById('timer').textContent = `${this.timeRemaining}`;
                 this.startTimer();
             }
 
-            // Iniciar el temporizador
             startTimer() {
                 this.timerInterval = setInterval(() => {
                     this.timeRemaining--;
@@ -179,37 +158,60 @@
 
                     if (this.timeRemaining <= 0) {
                         clearInterval(this.timerInterval);
-                        alert("Se acabó el tiempo. Reiniciando el juego.");
+                        alert("Se acabó el tiempo.");
+                        this.endGame();
+                    }
+                }, 1000);
+            }
+
+            endGame() {
+                clearInterval(this.timerInterval);
+                
+                if (this.score === this.questions.length) {
+                    totalScore += 10; // Bonificación por responder todas correctamente
+                    alert(`¡Felicitaciones! Respondiste correctamente todas las preguntas. Total: ${this.score} de ${this.questions.length}`);
+                } else {
+                    alert(`Fin del juego. Puntuación: ${this.score} de ${this.questions.length}`);
+                }
+
+                localStorage.setItem('totalScore', totalScore); // Guardar la puntuación en localStorage
+                updateScoreDisplay();
+                
+                this.showCountdown();
+            }
+
+            showCountdown() {
+                let countdown = 5;
+                const questionContainer = document.getElementById('question-container');
+                questionContainer.innerHTML = `<h2>¡Fin del juego! Reiniciando en ${countdown} segundos...</h2>`;
+
+                const interval = setInterval(() => {
+                    countdown--;
+                    questionContainer.innerHTML = `<h2>¡Fin del juego! Reiniciando en ${countdown} segundos...</h2>`;
+
+
+                    if (countdown === 0) {
+                        clearInterval(interval);
                         this.resetGame();
                     }
                 }, 1000);
             }
 
             resetGame() {
-                clearInterval(this.timerInterval);
                 this.currentQuestionIndex = 0;
                 this.score = 0;
-                location.reload(); // Reiniciar la página
+                location.reload(); // Reinicia el juego recargando la página
+                
             }
         }
 
-        // Lista de preguntas
         const questionsList = [
             new Question("¿Qué es un ser vivo?", ["Algo que crece, se nutre y se reproduce", "Un objeto inanimado", "Algo que no necesita alimento", "Un ser que no cambia"], 0),
-            new Question("¿Cuál de los siguientes no es una característica de los seres vivos?", ["Nacer", "Crecer", "Reproducirse", "No moverse nunca"], 3),
-            new Question("¿Qué significa la reproducción en los seres vivos?", ["Crear alimentos", "Tener descendencia", "Respirar", "Moverse"], 1),
-            new Question("¿Qué tipo de seres vivos son las plantas?", ["Heterótrofos", "Autótrofos", "Carnívoros", "Omnívoros"], 1),
-            new Question("¿Qué función realiza la fotosíntesis en las plantas?", ["Obtener alimento a partir de la luz solar", "Reproducirse", "Descomponer alimentos", "Respirar oxígeno"], 0),
-            new Question("¿Qué gas necesitan las plantas para hacer la fotosíntesis?", ["Oxígeno", "Dióxido de carbono", "Nitrógeno", "Hidrógeno"], 1),
-            new Question("¿Cómo se llaman los organismos que no pueden producir su propio alimento?", ["Autótrofos", "Heterótrofos", "Productores", "Descomponedores"], 1),
-            new Question("¿Cuál es el órgano principal de la respiración en los mamíferos?", ["Pulmones", "Corazón", "Estómago", "Hígado"], 0),
-            new Question("¿Qué grupo de animales pone huevos?", ["Mamíferos", "Anfibios", "Aves", "Insectos"], 2),
-            new Question("¿Qué tipo de ser vivo descompone materia orgánica?", ["Productores", "Consumidores", "Descomponedores", "Autótrofos"], 2)
+            new Question("¿Cuál de los siguientes no es una característica de los seres vivos?", ["Nacer", "Crecer", "Reproducirse", "No moverse nunca"], 3)
         ];
 
         let game;
 
-        // Iniciar el juego
         function startGame() {
             if (!game) {
                 game = new Game(questionsList);
@@ -218,25 +220,16 @@
                 document.querySelector('.progress-container').classList.add('show-progress');
                 document.querySelector('#timer').classList.add('show-progress');
                 document.querySelector('#progress-text').classList.add('show-progress');
-                document.querySelector('#score-container').classList.add('show-progress');
-
-
-                // Actualizar el puntaje acumulado en pantalla al iniciar
-                updateScoreDisplay();
             }
         }
 
-        // Verificar la respuesta seleccionada
         function checkAnswer() {
-            if (game) {
-                const selectedOption = document.querySelector('input[name="answer"]:checked');
-                if (selectedOption) {
-                    game.checkAnswer(parseInt(selectedOption.value));
-                } else {
-                    alert("Por favor, selecciona una respuesta.");
-                }
+            const selectedOption = document.querySelector('input[name="answer"]:checked');
+            if (selectedOption) {
+                const selectedOptionIndex = parseInt(selectedOption.value);
+                game.checkAnswer(selectedOptionIndex);
             } else {
-                alert("Por favor, inicia el juego primero haciendo clic en 'Comenzar juego'.");
+                alert('Por favor selecciona una respuesta.');
             }
         }
     </script>
