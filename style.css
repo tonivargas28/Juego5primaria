@@ -155,12 +155,8 @@ button:hover {
 }
 
 /* Texto de progreso */
-#progress-text {
-    font-size: 1.2em;
-    display: none;
-    color: #ffffff;
-    margin-top: 10px;
-}
+
+
 /* Contenedor del contador de puntos */
 #score-container {
     font-size: 2rem;
@@ -237,12 +233,8 @@ button:hover {
 }
 
 /* Texto de puntos */
-#points-text {
-    font-size: 1.5em;
-    font-weight: bold;
-    color: #ffffff;
-    display: inline-block;
-}
+
+
 
 /* Animación de fade-in para el texto de puntos */
 @keyframes fadeIn {

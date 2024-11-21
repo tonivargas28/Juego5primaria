@@ -30,7 +30,7 @@
     
 
     <script>
-        const totalQuestions = 2; // Cambia esto para un total de 10 preguntas si lo necesitas
+        const totalQuestions = 15; // Cambia esto para un total de 10 preguntas si lo necesitas
         let correctAnswers = 0;
         let totalScore = 0;
 
@@ -207,7 +207,22 @@
 
         const questionsList = [
             new Question("¿Qué es un ser vivo?", ["Algo que crece, se nutre y se reproduce", "Un objeto inanimado", "Algo que no necesita alimento", "Un ser que no cambia"], 0),
-            new Question("¿Cuál de los siguientes no es una característica de los seres vivos?", ["Nacer", "Crecer", "Reproducirse", "No moverse nunca"], 3)
+            new Question("¿Cuál de los siguientes no es una característica de los seres vivos?", ["Nacer", "Crecer", "Reproducirse", "No moverse nunca"], 3),
+            new Question("¿Cuál es la capital de Francia?", ["Berlín", "Madrid", "París", "Lisboa"], 2),
+            new Question("¿Quién escribió 'Cien años de soledad'?", ["Gabriel García Márquez", "Julio Cortázar", "Mario Vargas Llosa", "Pablo Neruda"], 0),
+            new Question("¿Qué continente es conocido como el 'viejo continente'?", ["América", "Asia", "África", "Europa"], 3),
+            new Question("¿Cuál es el planeta más cercano al sol?", ["Venus", "Mercurio", "Marte", "Tierra"], 1),
+            new Question("¿En qué año llegó el hombre a la luna?", ["1965", "1969", "1971", "1975"], 1),
+            new Question("¿Quién pintó la Mona Lisa?", ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"], 1),
+            new Question("¿Cuál es el océano más grande del mundo?", ["Atlántico", "Índico", "Ártico", "Pacífico"], 3),
+            new Question("¿Qué es la ONU?", ["Organización Nacional Unida", "Organización de Naciones Unidas", "Organización Unida de Naciones", "Naciones Unidas Organizacionales"], 1),
+            new Question("¿Quién fue el primer presidente de los Estados Unidos?", ["George Washington", "Abraham Lincoln", "Thomas Jefferson", "John Adams"], 0),
+            new Question("¿Qué instrumento mide la presión atmosférica?", ["Termómetro", "Barómetro", "Higrómetro", "Anemómetro"], 1),
+            new Question("¿Quién desarrolló la teoría de la relatividad?", ["Isaac Newton", "Albert Einstein", "Nikola Tesla", "Galileo Galilei"], 1),
+            new Question("¿Cuál es el idioma más hablado del mundo?", ["Inglés", "Chino Mandarín", "Español", "Hindi"], 1),
+            new Question("¿Cuál es el metal más ligero?", ["Aluminio", "Litio", "Hierro", "Mercurio"], 1),
+            new Question("¿Cuántos colores hay en el arco iris?", ["6", "7", "8", "9"], 1),
+            new Question("¿Qué significa 'pH' en química?", ["Potencial de Hidrógeno", "Potencial de Hidrógeno", "Propiedad Hidrofóbica", "Potencial de Hidrógeno"], 0)
         ];
 
         let game;
